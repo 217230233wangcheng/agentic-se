@@ -1,0 +1,74 @@
+### **Software Requirements for Robot Navigation**  
+**Goal**: Develop a navigation system for a mobile robot that prioritizes goal-directed movement while avoiding obstacles and ensuring safe stopping behavior.  
+
+---
+
+### **Functional Requirements**  
+1. **Goal-Directed Movement**  
+   - The robot must prioritize moving toward its goal **only if the path is unblocked**.  
+   - If the goal is **ahead**, the robot must attempt to move forward **before** considering left or right directions.  
+   - If the goal is **left** or **right**, the robot must attempt to move in that direction **before** checking other directions.  
+
+2. **Obstacle Avoidance**  
+   - The robot **must not move into a blocked direction** (forward, left, or right).  
+   - Before executing any movement, the system must validate that the target direction is unblocked.  
+
+3. **Safe Stopping Behavior**  
+   - If **all three directions** (forward, left, right) are blocked, the robot must **immediately stop** and enter a safe stopping state.  
+   - The stopping state must prevent any further movement until the blockage is resolved.  
+
+4. **Real-Time Decision Making**  
+   - The navigation system must **continuously monitor** sensor inputs for block status and goal direction.  
+   - Movement decisions must be updated **in real-time** based on dynamic changes in the environment.  
+
+---
+
+### **Non-Functional Requirements**  
+1. **Sensor Input Handling**  
+   - The system must accurately interpret sensor data for:  
+     - Block status (forward, left, right).  
+     - Goal direction (ahead, left, right).  
+
+2. **Determinism and Predictability**  
+   - The navigation logic must be **deterministic** to ensure consistent behavior across environments.  
+   - The system must **avoid ambiguous or undefined behaviors** (e.g., prioritizing left vs. right when both are unblocked).  
+
+3. **Testability**  
+   - The navigation component must be **modular** to support testing in simulated environments.  
+   - The system must include a **test mode** to simulate:  
+     - Varying block statuses (e.g., all directions blocked, one direction unblocked).  
+     - Goal positions (ahead, left, right).  
+   - Logging of sensor inputs, movement decisions, and stopping events is required for debugging and validation.  
+
+4. **Safety Constraints**  
+   - The robot must **never attempt to move into a blocked direction**.  
+   - The stopping behavior must be **immediate** when no safe directions are available.  
+
+---
+
+### **Testing Expectations**  
+1. **Simulated Environments**  
+   - The navigation logic must be validated in **multiple simulated environments** with:  
+     - Static and dynamic obstacles.  
+     - Varying goal positions.  
+     - Edge cases (e.g., all directions blocked, goal in a blocked direction).  
+
+2. **Validation Criteria**  
+   - The system must **correctly prioritize goal-directed movement** when unblocked.  
+   - The robot must **stop immediately** when no safe directions are available.  
+   - The system must **avoid moving into blocked directions** in all scenarios.  
+
+3. **Edge Case Coverage**  
+   - Test scenarios must include:  
+     - Goal direction blocked, but alternative directions unblocked.  
+     - All directions blocked (forced stop).  
+     - Goal direction unblocked but other directions blocked (prioritize goal direction).  
+
+---
+
+### **Implementation Notes**  
+- The navigation logic should use a **priority-based decision tree** to resolve conflicts between goal direction and obstacle avoidance.  
+- The system must expose **configuration parameters** for testing (e.g., sensor input overrides, goal direction overrides).  
+- Logging must include timestamps, sensor data, and movement decisions for traceability.  
+
+This structure ensures clarity, safety, and testability while aligning with the robot navigation brief.
