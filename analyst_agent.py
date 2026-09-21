@@ -122,3 +122,4 @@ def run_analyst(brief_text):
     json_text = extract_json_text(model_response)
     requirements = json.loads(json_text)
     return validate_requirements(requirements)
+

@@ -1,11 +1,11 @@
 import json
 from urllib.request import Request, urlopen
 
-
+# Ollama API endpoint and model name
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "qwen3:8b"
 
-
+# Main function give brief text and return requirements text
 def main():
     with open("brief.txt", "r", encoding="utf-8") as file:
         brief_text = file.read()
