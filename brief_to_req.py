@@ -1,8 +1,5 @@
-import json
-from urllib.request import Request, urlopen
+from ollama import chat
 
-# Ollama API endpoint and model name
-OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "qwen3:8b"
 
 # Main function give brief text and return requirements text
@@ -23,25 +20,20 @@ Brief:
 \"\"\"
 """.strip()
 
-    payload = {
-        "model": MODEL_NAME,
-        "prompt": prompt,
-        "stream": False,
-        "options": {
-            "temperature": 0
+    response = chat(
+        model=MODEL_NAME,
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        options={
+            "temperature": 0,
         },
-    }
-    request = Request(
-        OLLAMA_URL,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST",
     )
 
-    with urlopen(request, timeout=120) as response:
-        data = json.loads(response.read().decode("utf-8"))
-
-    requirements_text = data["response"].strip()
+    requirements_text = response["message"]["content"].strip()
     print(requirements_text)
 
 

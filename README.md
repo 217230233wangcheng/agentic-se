@@ -16,6 +16,7 @@ agentic_se/
   brief.txt
   brief_to_req.py
   README.md
+  requirements.txt
   robot_requirements.txt
   run_analyst.py
 ```
@@ -112,6 +113,12 @@ It excludes:
 - `*.pyc`
 - `.pytest_cache/`
 
+### `requirements.txt`
+
+This file lists the Python package required by the project.
+
+The project uses the `ollama` Python package to call the local Ollama service.
+
 ## Requirements
 
 This project expects:
@@ -120,12 +127,10 @@ This project expects:
 - uv
 - Ollama
 - the local Ollama model `qwen3:8b`
+- the Python package listed in `requirements.txt`
 
-The scripts call the local Ollama API:
-
-```text
-http://localhost:11434/api/generate
-```
+The scripts use the `ollama` Python package to call the local Ollama service.
+Ollama must be running locally before the scripts are executed.
 
 ## How To Run
 
@@ -133,6 +138,12 @@ Create the virtual environment with uv:
 
 ```powershell
 uv venv --python "C:\Program Files\Python312\python.exe" .venv
+```
+
+Install the Python dependency:
+
+```powershell
+uv pip install -r requirements.txt
 ```
 
 Run the first-stage requirements experiment:
@@ -185,4 +196,3 @@ Saved validated requirements to D:\agentic_se\artifacts\requirements.json
 
 Then open `artifacts/requirements.json` and confirm that it is valid JSON with
 only the four required fields.
-

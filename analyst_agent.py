@@ -1,10 +1,8 @@
 import json
 from json import JSONDecodeError
-from urllib.error import URLError
-from urllib.request import Request, urlopen
 
+from ollama import chat
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "qwen3:8b"
 EXPECTED_KEYS = {"goal", "allowed_actions", "safe_stop", "avoid_obstacles"}
 EXPECTED_ACTIONS = ["FORWARD", "LEFT", "RIGHT", "STOP"]
@@ -44,31 +42,26 @@ Brief text:
 
 
 def call_qwen(prompt):
-    payload = {
-        "model": MODEL_NAME,
-        "prompt": prompt,
-        "stream": False,
-        "format": "json",
-        "options": {
-            "temperature": 0
-        },
-    }
-    request = Request(
-        OLLAMA_URL,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-
     try:
-        with urlopen(request, timeout=120) as response:
-            data = json.loads(response.read().decode("utf-8"))
-    except (OSError, URLError, JSONDecodeError) as exc:
+        response = chat(
+            model=MODEL_NAME,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            format="json",
+            options={
+                "temperature": 0,
+            },
+        )
+    except Exception as exc:
         raise RuntimeError(
             "Could not call Ollama. Make sure Ollama is running and qwen3:8b is installed."
         ) from exc
 
-    return data.get("response", "")
+    return response["message"]["content"]
 
 
 def extract_json_text(model_response):
@@ -122,4 +115,3 @@ def run_analyst(brief_text):
     json_text = extract_json_text(model_response)
     requirements = json.loads(json_text)
     return validate_requirements(requirements)
-
