@@ -1,0 +1,10 @@
+{
+  "strategy": "Move toward the goal using FORWARD, LEFT, or RIGHT based on directional clarity, prioritizing direct paths and avoiding obstacles.",
+  "decisions": [
+    "If goal is ahead and FORWARD is clear, move FORWARD",
+    "If goal is left and LEFT is clear, move LEFT",
+    "If goal is right and RIGHT is clear, move RIGHT",
+    "If all directions are blocked, execute STOP"
+  ],
+  "stop_condition": "When FORWARD, LEFT, and RIGHT movements are all blocked"
+}
