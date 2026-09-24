@@ -100,11 +100,11 @@ def validate_requirements(result):
             f"allowed_actions must be exactly {EXPECTED_ACTIONS}."
         )
 
-    if not isinstance(result["safe_stop"], bool):
-        raise ValueError("safe_stop must be a boolean.")
+    if result["safe_stop"] is not True:
+        raise ValueError("safe_stop must be true.")
 
-    if not isinstance(result["avoid_obstacles"], bool):
-        raise ValueError("avoid_obstacles must be a boolean.")
+    if result["avoid_obstacles"] is not True:
+        raise ValueError("avoid_obstacles must be true.")
 
     return result
 

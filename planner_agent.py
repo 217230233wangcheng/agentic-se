@@ -29,8 +29,13 @@ Rules:
 5. If the goal is right and RIGHT is clear, prefer RIGHT.
 6. If all movement directions are blocked, the robot must STOP.
 7. Respect safe_stop and avoid_obstacles from the requirements.
-8. Do not add extra JSON keys.
-9. Do not include markdown code fences or explanations.
+8. Only when no indicated goal direction is clear, choose the first clear
+   direction in this order: FORWARD, LEFT, RIGHT. This fallback must not
+   override a clear goal direction.
+9. Include decisions for all three goal directions, this exact fallback
+   condition, and STOP.
+10. Do not add extra JSON keys.
+11. Do not include markdown code fences or explanations.
 """.strip()
 
 
@@ -72,17 +77,17 @@ def validate_plan(plan):
             "Plan must contain exactly: strategy, decisions, stop_condition."
         )
 
-    if not isinstance(plan["strategy"], str):
-        raise ValueError("strategy must be a string.")
+    if not isinstance(plan["strategy"], str) or not plan["strategy"].strip():
+        raise ValueError("strategy must be a non-empty string.")
 
-    if not isinstance(plan["decisions"], list):
-        raise ValueError("decisions must be a list.")
+    if not isinstance(plan["decisions"], list) or not plan["decisions"]:
+        raise ValueError("decisions must be a non-empty list.")
 
-    if not all(isinstance(decision, str) for decision in plan["decisions"]):
-        raise ValueError("Every item in decisions must be a string.")
+    if not all(isinstance(decision, str) and decision.strip() for decision in plan["decisions"]):
+        raise ValueError("Every item in decisions must be a non-empty string.")
 
-    if not isinstance(plan["stop_condition"], str):
-        raise ValueError("stop_condition must be a string.")
+    if not isinstance(plan["stop_condition"], str) or not plan["stop_condition"].strip():
+        raise ValueError("stop_condition must be a non-empty string.")
 
     return plan
 
@@ -110,7 +115,10 @@ def run_planner(requirements):
                     + json.dumps(requirements, indent=2)
                 )
             }
-        ]
+        ],
+        format="json",
+        think=False,
+        options={"temperature": 0},
     )
 
     json_text = clean_json_text(response.message.content)

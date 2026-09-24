@@ -1,5 +1,7 @@
-from ollama import chat
 import ast
+import json
+
+from ollama import chat
 
 
 MODEL = "qwen3:8b"
@@ -13,12 +15,23 @@ Your job is to convert that plan into valid Python navigation code.
 Rules:
 1. Return only Python code.
 2. Do not include markdown code fences or explanations.
-3. The code must contain at least one function for robot navigation.
-4. The robot may only return these actions:
+   Start the response with Python code, not a description of the solution.
+3. Define a top-level function named decide_next_move(state). Other helper
+   functions are allowed, but callers must only need decide_next_move(state).
+4. state is a dictionary containing these six Boolean sensor values:
+   goal_ahead, goal_on_left, goal_on_right,
+   front_blocked, left_blocked, right_blocked.
+5. If a goal direction is clear, move toward it. If more than one goal flag is
+   true, check them in the order ahead, left, right.
+6. If no indicated goal direction is clear, choose the first clear direction
+   in this order: FORWARD, LEFT, RIGHT.
+7. If all three directions are blocked, return STOP.
+8. Use the supplied state for every decision. Do not use placeholder sensor
+   functions or hard-coded sensor readings.
+9. The robot may only return these actions:
    FORWARD, LEFT, RIGHT, STOP
-5. The robot must not move into a blocked direction.
-6. If all possible directions are blocked, the robot must return STOP.
-7. Follow the strategy, decisions, and stop condition in the supplied plan.
+10. The robot must not move into a blocked direction.
+11. Follow the strategy, decisions, and stop condition in the supplied plan.
 """.strip()
 
 
@@ -38,8 +51,7 @@ def clean_code(code):
 
 def validate_code(code):
     """
-    Check that the model produced valid Python code
-    and that the code contains at least one function.
+    Check that the model produced valid Python code with the required entry point.
     """
     if not isinstance(code, str) or not code.strip():
         raise ValueError("Developer output must be non-empty Python code.")
@@ -49,15 +61,19 @@ def validate_code(code):
     except SyntaxError as error:
         raise ValueError(f"Developer output is not valid Python: {error}")
 
-    has_function = any(
-        isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-        for node in ast.walk(tree)
-    )
-
-    if not has_function:
+    entry_points = [
+        node for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "decide_next_move"
+    ]
+    if len(entry_points) != 1:
         raise ValueError(
-            "Developer output must contain at least one navigation function."
+            "Developer output must define decide_next_move(state)."
         )
+    arguments = entry_points[0].args
+    if (len(arguments.posonlyargs) != 0 or len(arguments.args) != 1
+            or arguments.args[0].arg != "state" or arguments.vararg is not None
+            or arguments.kwonlyargs or arguments.kwarg is not None):
+        raise ValueError("decide_next_move must accept exactly one state argument.")
 
     return code
 
@@ -79,10 +95,12 @@ def run_developer(plan):
                 "role": "user",
                 "content": (
                     "Create the Python navigation logic from this validated plan:\n\n"
-                    + str(plan)
+                    + json.dumps(plan, indent=2)
                 )
             }
-        ]
+        ],
+        options={"temperature": 0},
+        think=False,
     )
 
     code = response.message.content

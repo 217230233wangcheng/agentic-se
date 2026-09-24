@@ -6,7 +6,11 @@ from developer_agent import run_developer
 
 
 PLAN_FILE = Path("artifacts") / "plan.json"
-OUTPUT_FILE = Path("navigation_logic.py")
+OUTPUT_FILES = (
+    Path("navigation_logic.py"),
+    Path("artifacts") / "navigation_logic.py",
+    Path("generated") / "navigation_logic.py",
+)
 
 
 def main():
@@ -20,9 +24,12 @@ def main():
 
     code = run_developer(plan)
 
-    OUTPUT_FILE.write_text(code, encoding="utf-8")
+    for output_file in OUTPUT_FILES:
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        output_file.write_text(code + "\n", encoding="utf-8")
 
-    print(f"Generated code saved to {OUTPUT_FILE}")
+    for output_file in OUTPUT_FILES:
+        print(f"Generated code saved to {output_file}")
 
 
 if __name__ == "__main__":
