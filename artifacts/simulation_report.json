@@ -1,0 +1,148 @@
+{
+  "total_scenarios": 10,
+  "passed": 10,
+  "failed": 0,
+  "success_rate": 1.0,
+  "results": [
+    {
+      "name": "goal ahead clear",
+      "state": {
+        "goal_ahead": true,
+        "goal_on_left": false,
+        "goal_on_right": false,
+        "front_blocked": false,
+        "left_blocked": false,
+        "right_blocked": false
+      },
+      "expected": "FORWARD",
+      "actual": "FORWARD",
+      "passed": true
+    },
+    {
+      "name": "goal left clear",
+      "state": {
+        "goal_ahead": false,
+        "goal_on_left": true,
+        "goal_on_right": false,
+        "front_blocked": false,
+        "left_blocked": false,
+        "right_blocked": false
+      },
+      "expected": "LEFT",
+      "actual": "LEFT",
+      "passed": true
+    },
+    {
+      "name": "goal right clear",
+      "state": {
+        "goal_ahead": false,
+        "goal_on_left": false,
+        "goal_on_right": true,
+        "front_blocked": false,
+        "left_blocked": false,
+        "right_blocked": false
+      },
+      "expected": "RIGHT",
+      "actual": "RIGHT",
+      "passed": true
+    },
+    {
+      "name": "left goal blocked fallback forward",
+      "state": {
+        "goal_ahead": false,
+        "goal_on_left": true,
+        "goal_on_right": false,
+        "front_blocked": false,
+        "left_blocked": true,
+        "right_blocked": false
+      },
+      "expected": "FORWARD",
+      "actual": "FORWARD",
+      "passed": true
+    },
+    {
+      "name": "right goal blocked fallback left",
+      "state": {
+        "goal_ahead": false,
+        "goal_on_left": false,
+        "goal_on_right": true,
+        "front_blocked": true,
+        "left_blocked": false,
+        "right_blocked": true
+      },
+      "expected": "LEFT",
+      "actual": "LEFT",
+      "passed": true
+    },
+    {
+      "name": "front blocked fallback left",
+      "state": {
+        "goal_ahead": false,
+        "goal_on_left": false,
+        "goal_on_right": false,
+        "front_blocked": true,
+        "left_blocked": false,
+        "right_blocked": false
+      },
+      "expected": "LEFT",
+      "actual": "LEFT",
+      "passed": true
+    },
+    {
+      "name": "front and left blocked fallback right",
+      "state": {
+        "goal_ahead": false,
+        "goal_on_left": false,
+        "goal_on_right": false,
+        "front_blocked": true,
+        "left_blocked": true,
+        "right_blocked": false
+      },
+      "expected": "RIGHT",
+      "actual": "RIGHT",
+      "passed": true
+    },
+    {
+      "name": "all directions blocked stop",
+      "state": {
+        "goal_ahead": false,
+        "goal_on_left": false,
+        "goal_on_right": false,
+        "front_blocked": true,
+        "left_blocked": true,
+        "right_blocked": true
+      },
+      "expected": "STOP",
+      "actual": "STOP",
+      "passed": true
+    },
+    {
+      "name": "multiple goals use ahead first",
+      "state": {
+        "goal_ahead": true,
+        "goal_on_left": true,
+        "goal_on_right": true,
+        "front_blocked": false,
+        "left_blocked": false,
+        "right_blocked": false
+      },
+      "expected": "FORWARD",
+      "actual": "FORWARD",
+      "passed": true
+    },
+    {
+      "name": "ahead blocked then left goal",
+      "state": {
+        "goal_ahead": true,
+        "goal_on_left": true,
+        "goal_on_right": false,
+        "front_blocked": true,
+        "left_blocked": false,
+        "right_blocked": false
+      },
+      "expected": "LEFT",
+      "actual": "LEFT",
+      "passed": true
+    }
+  ]
+}

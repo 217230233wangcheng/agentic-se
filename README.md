@@ -1,24 +1,54 @@
-# SCSE Requirements Engineering Agent
+# SCSE Agentic Software Engineering Project
 
-This project is for the SCSE Requirements Engineering practice.
+This project is for the SCSE Agentic Software Engineering practices.
 
-The goal of the project is to use a local Qwen model through Ollama to convert
-a human-written robot navigation brief into explicit software requirements and
-a validated JSON requirements file.
+The project uses a local Qwen model through Ollama to convert a human-written
+robot navigation brief into validated requirements, a navigation plan,
+generated navigation logic, tests, simulation reports, and IR-SIM benchmark
+reports.
 
 ## Project Structure
 
 ```text
 agentic_se/
   artifacts/
+    benchmark_review_report.json
+    irsim_benchmark_report.json
+    navigation_logic.py
+    plan.json
     requirements.json
+    review_report.json
+    simulation_report.json
+    test_navigation_logic.py
+    test_report.json
+  generated/
+    navigation_logic.py
+  irsim_worlds/
+    world_custom.yaml
+    world_difficult.yaml
+    world_easy.yaml
+    world_hard.yaml
+    world_medium.yaml
+  main.py
   analyst_agent.py
+  benchmark_irsim.py
   brief.txt
   brief_to_req.py
+  developer_agent.py
+  planner_agent.py
   README.md
   requirements.txt
+  reviewer_agent.py
+  reviewer_benchmark_agent.py
   robot_requirements.txt
+  run_visual.sh
   run_analyst.py
+  run_developer.py
+  run_planner.py
+  runner.py
+  test_agent.py
+  test_irsim_with_agent.py
+  trace.log
 ```
 
 ## File Descriptions
@@ -196,3 +226,59 @@ Saved validated requirements to D:\agentic_se\artifacts\requirements.json
 
 Then open `artifacts/requirements.json` and confirm that it is valid JSON with
 only the four required fields.
+
+## Integration and Simulation Workflow
+
+The current project also includes the Integration and Simulation assignment.
+
+Run the full orchestrated pipeline with:
+
+```powershell
+.\.venv\Scripts\python.exe main.py
+```
+
+The orchestrator runs:
+
+1. Analyst Agent
+2. Planner Agent
+3. Developer Agent
+4. Test Agent
+5. Generated pytest tests
+6. Simple simulation
+7. Reviewer Agent
+8. IR-SIM benchmark
+9. Benchmark Reviewer Agent
+10. Developer Revision Agent if revision is needed
+
+All pipeline events are written to:
+
+```text
+trace.log
+```
+
+Run the simple simulation only:
+
+```powershell
+.\.venv\Scripts\python.exe runner.py
+```
+
+Run the IR-SIM benchmark only:
+
+```powershell
+.\.venv\Scripts\python.exe benchmark_irsim.py
+```
+
+Run a visual IR-SIM world manually:
+
+```bash
+./run_visual.sh irsim_worlds/world_easy.yaml
+./run_visual.sh irsim_worlds/world_medium.yaml
+./run_visual.sh irsim_worlds/world_difficult.yaml
+./run_visual.sh irsim_worlds/world_custom.yaml
+```
+
+For a detailed summary of the Integration and Simulation work, see:
+
+```text
+INTEGRATION_AND_SIMULATION_WORK.md
+```

@@ -107,3 +107,69 @@ def run_developer(plan):
     code = clean_code(code)
 
     return validate_code(code)
+
+
+REVISION_SYSTEM_PROMPT = """
+You are the Developer Revision Agent in a multi-agent robot navigation system.
+
+You receive the original navigation code, the simulation review notes, the
+IR-SIM benchmark report, the validated requirements, and the validated plan.
+Your job is to generate an improved version of the navigation logic.
+
+Rules:
+1. Return only Python code.
+2. Do not include markdown code fences or explanations.
+3. Define exactly one required public function named decide_next_move(state).
+4. The function must accept exactly one argument named state.
+5. state is a dictionary containing these six Boolean sensor values:
+   goal_ahead, goal_on_left, goal_on_right,
+   front_blocked, left_blocked, right_blocked.
+6. The robot may only return FORWARD, LEFT, RIGHT, or STOP.
+7. The robot must never move into a blocked direction.
+8. If a clear goal direction exists, move toward it in this priority order:
+   ahead, left, right.
+9. If no indicated goal direction is clear, choose the first clear direction
+   in this order: FORWARD, LEFT, RIGHT.
+10. If every direction is blocked, return STOP.
+11. Use the review notes and benchmark report to improve the code, but never
+    violate the validated requirements or plan.
+""".strip()
+
+
+def run_developer_revision(
+        original_code,
+        review_notes,
+        benchmark_report,
+        requirements,
+        plan):
+    """
+    Generate revised navigation logic from the original code and review
+    artifacts, then validate the revised Python code.
+    """
+    response = chat(
+        model=MODEL,
+        messages=[
+            {
+                "role": "system",
+                "content": REVISION_SYSTEM_PROMPT
+            },
+            {
+                "role": "user",
+                "content": json.dumps(
+                    {
+                        "original_code": original_code,
+                        "review_notes": review_notes,
+                        "benchmark_report": benchmark_report,
+                        "requirements": requirements,
+                        "plan": plan,
+                    },
+                    indent=2
+                )
+            }
+        ],
+        options={"temperature": 0},
+        think=False,
+    )
+
+    code = clean_code(response.message.content)
+    return validate_code(code)

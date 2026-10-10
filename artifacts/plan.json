@@ -1,11 +1,11 @@
 {
-  "strategy": "The robot will navigate toward its target location while avoiding obstacles and ensuring safe movement by prioritizing forward motion when possible, and using left or right turns as needed.",
+  "strategy": "The robot will navigate toward the goal location while avoiding obstacles and stopping safely when necessary.",
   "decisions": [
-    "If the goal is ahead and FORWARD is clear, move FORWARD",
-    "If the goal is left and LEFT is clear, move LEFT",
-    "If the goal is right and RIGHT is clear, move RIGHT",
-    "If no clear goal direction is available, prioritize FORWARD, then LEFT, then RIGHT",
-    "If all directions are blocked, STOP"
+    "If the goal is ahead and FORWARD is clear, move FORWARD.",
+    "If the goal is to the left and LEFT is clear, move LEFT.",
+    "If the goal is to the right and RIGHT is clear, move RIGHT.",
+    "If no clear goal direction is available, prioritize FORWARD, then LEFT, then RIGHT.",
+    "If all directions are blocked, STOP."
   ],
-  "stop_condition": "If all movement directions are blocked"
+  "stop_condition": "If all movement directions are blocked, the robot must STOP."
 }

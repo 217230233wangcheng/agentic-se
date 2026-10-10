@@ -1,0 +1,6 @@
+{
+  "return_code": 0,
+  "passed": true,
+  "stdout": "============================= test session starts =============================\nplatform win32 -- Python 3.12.9, pytest-9.1.1, pluggy-1.6.0\nrootdir: D:\\agentic_se\nplugins: anyio-4.15.1\ncollected 3 items\n\nartifacts\\test_navigation_logic.py ...                                   [100%]\n\n============================== 3 passed in 0.03s ==============================\n",
+  "stderr": ""
+}
